@@ -1,0 +1,414 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+    --bg-base: #14181f;
+    --bg-card: #1f2530;
+    --bg-card-elevated: #262d3a;
+    --blue: #4d8eff;
+    --blue-soft: rgba(77, 142, 255, 0.12);
+    --green: #34d399;
+    --green-soft: rgba(52, 211, 153, 0.12);
+    --text-primary: #e8ebf0;
+    --text-secondary: #8b94a8;
+    --text-tertiary: #5b6478;
+    --border: #2d3340;
+    --radius: 18px;
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.page {
+    flex: 1;
+    padding: 28px 20px 100px;
+    animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---------- Заголовок ---------- */
+.page-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 4px 0 24px;
+}
+
+.page-title span {
+    color: var(--blue);
+}
+
+/* ---------- Карточки ---------- */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 14px;
+}
+
+.card .label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0 0 6px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.card .value {
+    font-family: 'Manrope', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.card.accent-blue {
+    border-color: rgba(77, 142, 255, 0.25);
+    background: linear-gradient(135deg, var(--blue-soft), var(--bg-card));
+}
+
+.card.accent-blue .value {
+    color: var(--blue);
+}
+
+.card.accent-green {
+    border-color: rgba(52, 211, 153, 0.25);
+    background: linear-gradient(135deg, var(--green-soft), var(--bg-card));
+}
+
+.card.accent-green .value {
+    color: var(--green);
+    font-size: 30px;
+}
+
+.card.accent-green .value::after {
+    content: ' грн';
+    font-size: 16px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* ---------- Большая обзорная карточка (стрик) ---------- */
+.streak-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: var(--bg-card-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+.streak-ring {
+    position: relative;
+    width: 84px;
+    height: 84px;
+    flex-shrink: 0;
+}
+
+.streak-ring svg {
+    transform: rotate(-90deg);
+}
+
+.streak-ring circle.bg {
+    stroke: var(--border);
+}
+
+.streak-ring circle.progress {
+    stroke: var(--blue);
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.6s ease;
+}
+
+.streak-ring .days-count {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Manrope', sans-serif;
+}
+
+.streak-ring .days-count .num {
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.streak-ring .days-count .unit {
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.streak-info .start-date {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0 0 4px;
+}
+
+.streak-info .elapsed {
+    font-family: 'Manrope', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ---------- Кнопка чекина (CheckinButton) ---------- */
+.checkin-section {
+    margin-top: 8px;
+}
+
+.checkin-hint {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin-bottom: 10px;
+}
+
+.checkin-btn {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--green), #25b385);
+    color: #0c1410;
+    font-family: 'Manrope', sans-serif;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 6px 24px rgba(52, 211, 153, 0.3);
+    animation: pulse 2.4s ease-in-out infinite;
+    transition: transform 0.15s ease;
+}
+
+.checkin-btn:active {
+    transform: scale(0.97);
+}
+
+.checkin-btn.done {
+    background: var(--bg-card-elevated);
+    color: var(--text-secondary);
+    box-shadow: none;
+    animation: none;
+    cursor: default;
+}
+
+.checkin-btn.unavailable {
+    background: var(--bg-card);
+    color: var(--text-tertiary);
+    border: 1px dashed var(--border);
+    box-shadow: none;
+    animation: none;
+    cursor: default;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 6px 24px rgba(52, 211, 153, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 6px 32px rgba(52, 211, 153, 0.55);
+    }
+}
+
+/* ---------- Страница игры / Помощь ---------- */
+.game-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+    gap: 16px;
+}
+
+.game-page p.subtitle {
+    color: var(--text-secondary);
+    font-size: 14px;
+    max-width: 280px;
+    line-height: 1.6;
+}
+
+.panic-btn {
+    width: 100%;
+    padding: 22px;
+    border: none;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--blue), #3a6fd6);
+    color: #fff;
+    font-family: 'Manrope', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 8px 28px rgba(77, 142, 255, 0.35);
+    transition: transform 0.15s ease;
+}
+
+.panic-btn:active {
+    transform: scale(0.97);
+}
+
+/* ---------- Игра ---------- */
+.snake-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+}
+
+.snake-wrapper p {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
+.snake-wrapper canvas {
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    max-width: 100%;
+    box-shadow: var(--shadow);
+}
+
+.snake-wrapper .controls {
+    display: grid;
+    grid-template-columns: repeat(3, 56px);
+    grid-template-rows: repeat(2, 56px);
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.snake-wrapper .controls button {
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border-radius: 12px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.snake-wrapper .close-btn {
+    margin-top: 8px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* ---------- Нижняя навигация ---------- */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    background: var(--bg-card-elevated);
+    border-top: 1px solid var(--border);
+    padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+}
+
+.bottom-nav button {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.bottom-nav button.active {
+    color: var(--blue);
+}
+
+/* ---------- PWA install banner ---------- */
+.install-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-card-elevated);
+    border: 1px solid var(--blue-soft);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.install-banner .icon {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.install-banner b {
+    color: var(--text-primary);
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: var(--text-secondary);
+    font-family: 'Manrope', sans-serif;
+}
