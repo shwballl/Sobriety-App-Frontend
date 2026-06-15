@@ -4,8 +4,7 @@ import CheckinButton from "../components/CheckinButton";
 const API = "https://sobriety-app-backend.onrender.com/api";
 
 export default function Home() {
-  const [startDate, setStartDate] = useState(null);
-  const [dailySaving, setDailySaving] = useState(0);
+  const [progress, setProgress] = useState(null);
   const [now, setNow] = useState(new Date());
   const [checkinState, setCheckinState] = useState({
     available: false,
@@ -13,59 +12,56 @@ export default function Home() {
     period: null,
   });
 
+  // 1. Запрашиваем несгораемую дату старта с бэкенда
+  // Плюс запускаем локальный таймер для красивого "тиканья"
   useEffect(() => {
-    const storedDate = localStorage.getItem("sobriety_start_date");
-    if (storedDate) {
-      setStartDate(new Date(storedDate));
-    } else {
-      const newDate = new Date();
-      localStorage.setItem("sobriety_start_date", newDate.toISOString());
-      setStartDate(newDate);
-    }
-
-    const storedSaving = localStorage.getItem("sobriety_daily_saving");
-    if (storedSaving) {
-      setDailySaving(Number(storedSaving));
-    } else {
-      const defaultSaving = 500;
-      localStorage.setItem("sobriety_daily_saving", defaultSaving.toString());
-      setDailySaving(defaultSaving);
-    }
+    fetch(`${API}/progress`)
+      .then((r) => r.json())
+      .then(setProgress)
+      .catch((err) => console.error("Ошибка загрузки:", err));
 
     const interval = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const hour = now.getHours();
-    let currentPeriod = null;
-    if (hour >= 12 && hour < 13) currentPeriod = "day";
-    if (hour >= 20 && hour < 21) currentPeriod = "evening";
+  // Оптимизация: определяем текущий период вне useEffect
+  const currentHour = now.getHours();
+  let activePeriod = null;
+  if (currentHour >= 12 && currentHour < 13) activePeriod = "day";
+  if (currentHour >= 20 && currentHour < 21) activePeriod = "evening";
 
-    if (currentPeriod) {
-      fetch(`${API}/checkin/today?period=${currentPeriod}`)
+  // 2. Проверяем чекин ТОЛЬКО когда меняется период (чтобы не спамить бэкенд каждую секунду)
+  useEffect(() => {
+    if (activePeriod) {
+      fetch(`${API}/checkin/today?period=${activePeriod}`)
         .then((r) => r.json())
         .then((data) =>
           setCheckinState({
             available: !data.done,
             done: data.done,
-            period: currentPeriod,
+            period: activePeriod,
           }),
         )
         .catch(console.error);
     } else {
       setCheckinState({ available: false, done: false, period: null });
     }
-  }, [now]);
+  }, [activePeriod]);
 
-  if (!startDate) return <div className="loading">Загрузка...</div>;
+  // Пока данные с бэкенда не пришли
+  if (!progress) return <div className="loading">Загрузка...</div>;
 
+  const startDate = new Date(progress.start_date);
+  const dailySaving = progress.daily_saving || 500; // На случай если с бэка не придет цифра
+
+  // 3. Расчет времени (с миллисекундами)
   const diffMs = Math.max(0, now - startDate);
   const days = Math.floor(diffMs / 86400000);
   const hours = Math.floor((diffMs % 86400000) / 3600000);
   const minutes = Math.floor((diffMs % 3600000) / 60000);
   const seconds = Math.floor((diffMs % 60000) / 1000);
 
+  // Точный расчет экономии, чтобы деньги капали каждую секунду
   const exactDays = diffMs / 86400000;
   const saved = exactDays * dailySaving;
 
